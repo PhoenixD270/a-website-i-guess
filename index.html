@@ -1,626 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CLICKOVERSE</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #050810;
-    --panel: #0a0f1e;
-    --border: #1a2540;
-    --accent: #00f5ff;
-    --accent2: #ff00aa;
-    --accent3: #aaff00;
-    --text: #c8d8ff;
-    --dim: #4a5a7a;
-    --glow: 0 0 20px #00f5ff66;
-    --glow2: 0 0 20px #ff00aa66;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>~✦ my corner of the internet ✦~</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-top: #0a0a1a;
+      --sky-mid: #0d1b3e;
+      --sky-low: #1a2a5e;
+      --horizon: #2e1760;
+      --moon: #f5e6c8;
+      --cloud: rgba(200,210,255,0.12);
+      --star: #e8e0ff;
+      --accent: #b48eff;
+      --accent2: #ff8ef0;
+      --text: #d4caff;
+      --dim: #6a5f9e;
+    }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+    body {
+      font-family: 'Space Mono', monospace;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-low) 75%, var(--horizon) 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+    }
 
-  /* Scanline overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.08) 2px,
-      rgba(0,0,0,0.08) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
+    /* ── STARS ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--star);
+      animation: twinkle var(--dur) ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--min-op); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
 
-  /* Star field */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 20%, #ffffff33 0%, transparent 100%),
-      radial-gradient(1px 1px at 30% 70%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 40%, #ffffff44 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 10%, #ffffff33 0%, transparent 100%),
-      radial-gradient(1px 1px at 85% 60%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 15% 85%, #ffffff33 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 90%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 40% 50%, #ffffff44 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 30%, #ffffff33 0%, transparent 100%),
-      radial-gradient(1px 1px at 25% 55%, #ffffff22 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    /* ── MOON ── */
+    .moon {
+      position: fixed;
+      top: 7vh;
+      right: 12vw;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, #fff8e8, var(--moon) 60%, #c8b87a);
+      box-shadow: 0 0 40px 12px rgba(245,230,200,0.18), 0 0 90px 30px rgba(245,230,200,0.07);
+      z-index: 1;
+    }
 
-  header {
-    text-align: center;
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    z-index: 1;
-  }
+    /* ── CLOUDS ── */
+    .cloud {
+      position: fixed;
+      border-radius: 50px;
+      background: var(--cloud);
+      filter: blur(18px);
+      z-index: 1;
+      animation: drift linear infinite;
+    }
+    @keyframes drift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-110vw); }
+    }
 
-  header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.8rem, 5vw, 3.2rem);
-    font-weight: 900;
-    letter-spacing: 0.3em;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 15px #00f5ff88);
-    animation: titlePulse 3s ease-in-out infinite;
-  }
+    /* ── FLYING CAT ── */
+    .cat-wrap {
+      position: fixed;
+      z-index: 10;
+      animation: fly 18s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+      filter: drop-shadow(0 0 18px rgba(180,142,255,0.7)) drop-shadow(0 0 40px rgba(255,142,240,0.3));
+    }
+    @keyframes fly {
+      0%   { left: -120px; top: 30vh; transform: rotate(-4deg) scaleX(1); }
+      10%  { top: 26vh; transform: rotate(3deg) scaleX(1); }
+      20%  { top: 32vh; transform: rotate(-2deg) scaleX(1); }
+      30%  { top: 22vh; transform: rotate(4deg) scaleX(1); }
+      40%  { top: 28vh; transform: rotate(-3deg) scaleX(1); }
+      50%  { left: 50vw; top: 25vh; transform: rotate(2deg) scaleX(1); }
+      60%  { top: 30vh; transform: rotate(-4deg) scaleX(1); }
+      70%  { top: 20vh; transform: rotate(3deg) scaleX(1); }
+      80%  { top: 28vh; transform: rotate(-2deg) scaleX(1); }
+      90%  { top: 24vh; transform: rotate(4deg) scaleX(1); }
+      100% { left: 110vw; top: 30vh; transform: rotate(-2deg) scaleX(1); }
+    }
 
-  @keyframes titlePulse {
-    0%, 100% { filter: drop-shadow(0 0 15px #00f5ff88); }
-    50% { filter: drop-shadow(0 0 30px #ff00aa88); }
-  }
+    .cat-emoji {
+      font-size: 68px;
+      line-height: 1;
+      display: block;
+      animation: flap 0.35s ease-in-out infinite alternate;
+      user-select: none;
+    }
+    @keyframes flap {
+      from { transform: scaleY(1) translateY(0px); }
+      to   { transform: scaleY(0.88) translateY(-6px); }
+    }
 
-  header p {
-    color: var(--dim);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    margin-top: 6px;
-  }
+    /* wing sparkle trail */
+    .sparkle-trail {
+      position: absolute;
+      top: 50%;
+      left: -10px;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .sp {
+      font-size: 14px;
+      animation: fadetrail 0.6s ease-out forwards;
+      opacity: 0;
+    }
+    .sp:nth-child(1) { animation-delay: 0s; font-size: 18px; }
+    .sp:nth-child(2) { animation-delay: 0.1s; }
+    .sp:nth-child(3) { animation-delay: 0.2s; font-size: 10px; }
+    .sp:nth-child(4) { animation-delay: 0.3s; }
+    @keyframes fadetrail {
+      0%   { opacity: 0.9; transform: translateY(-50%) scale(1); }
+      100% { opacity: 0; transform: translateY(calc(-50% - 20px)) scale(0.4); }
+    }
 
-  main {
-    display: grid;
-    grid-template-columns: 260px 1fr 260px;
-    gap: 0;
-    flex: 1;
-    position: relative;
-    z-index: 1;
-  }
+    /* ── CONTENT ── */
+    .content {
+      position: relative;
+      z-index: 5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      gap: 48px;
+    }
 
-  /* PANELS */
-  .panel {
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 20px 16px;
-    overflow-y: auto;
-    max-height: calc(100vh - 90px);
-  }
-  .panel:last-child { border-right: none; border-left: 1px solid var(--border); }
+    .hero {
+      text-align: center;
+    }
 
-  .panel-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-    margin-bottom: 16px;
-    text-transform: uppercase;
-  }
+    .hero-label {
+      font-family: 'Pixelify Sans', monospace;
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
 
-  /* CENTER AREA */
-  .center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 30px 20px;
-    position: relative;
-  }
+    .hero-title {
+      font-family: 'Pixelify Sans', monospace;
+      font-size: clamp(42px, 9vw, 90px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: #fff;
+      text-shadow: 0 0 30px rgba(180,142,255,0.6), 0 0 80px rgba(180,142,255,0.2);
+      letter-spacing: -1px;
+    }
 
-  /* COUNTER */
-  .counter {
-    text-align: center;
-  }
-  .counter .main-count {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 700;
-    color: var(--accent);
-    text-shadow: var(--glow);
-    line-height: 1;
-    letter-spacing: 0.05em;
-    transition: transform 0.05s;
-  }
-  .counter .main-count.pop {
-    animation: pop 0.12s ease-out;
-  }
-  @keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); color: #fff; }
-    100% { transform: scale(1); }
-  }
-  .counter .label {
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
-    color: var(--dim);
-    margin-top: 4px;
-  }
-  .counter .cps {
-    font-size: 0.8rem;
-    color: var(--accent2);
-    margin-top: 8px;
-    letter-spacing: 0.1em;
-  }
+    .hero-title .accent { color: var(--accent2); }
 
-  /* CLICK BUTTON */
-  .click-zone {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    cursor: pointer;
-    user-select: none;
-  }
+    .hero-sub {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--dim);
+      letter-spacing: 1px;
+    }
 
-  .click-btn {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #1a3060, #060c1f);
-    border: 2px solid var(--accent);
-    box-shadow: var(--glow), inset 0 0 40px #00f5ff18;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.08s, box-shadow 0.08s;
-    position: relative;
-    z-index: 2;
-  }
-  .click-btn:hover {
-    box-shadow: 0 0 40px #00f5ffaa, inset 0 0 40px #00f5ff28;
-  }
-  .click-btn:active, .click-btn.pressed {
-    transform: scale(0.94);
-    box-shadow: 0 0 60px #00f5ffcc, inset 0 0 60px #00f5ff44;
-  }
-  .click-btn .btn-icon {
-    font-size: 3.2rem;
-    line-height: 1;
-    animation: orbitSpin 8s linear infinite;
-    display: block;
-  }
-  @keyframes orbitSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  .click-btn .btn-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    margin-top: 6px;
-  }
+    /* cards */
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 780px;
+    }
 
-  /* Orbit rings */
-  .orbit-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    border-radius: 50%;
-    border: 1px solid;
-    transform: translate(-50%, -50%);
-    animation: ringPulse 2s ease-in-out infinite;
-    pointer-events: none;
-  }
-  .orbit-ring:nth-child(2) { width: 200px; height: 200px; border-color: #00f5ff22; animation-delay: 0s; }
-  .orbit-ring:nth-child(3) { width: 230px; height: 230px; border-color: #ff00aa18; animation-delay: 0.4s; }
-  .orbit-ring:nth-child(4) { width: 260px; height: 260px; border-color: #00f5ff15; animation-delay: 0.8s; }
-  @keyframes ringPulse {
-    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
-  }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(180,142,255,0.15);
+      border-radius: 16px;
+      padding: 28px 32px;
+      min-width: 200px;
+      flex: 1;
+      max-width: 220px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      backdrop-filter: blur(8px);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.03);
+      border-color: rgba(180,142,255,0.5);
+      background: rgba(180,142,255,0.08);
+    }
 
-  /* FLOATING CLICK NUMBERS */
-  .floaty {
-    position: fixed;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--accent);
-    pointer-events: none;
-    z-index: 9998;
-    text-shadow: 0 0 10px currentColor;
-    animation: floatUp 0.9s ease-out forwards;
-  }
-  @keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(-80px) scale(0.7); }
-  }
+    .card-icon { font-size: 32px; }
+    .card-title {
+      font-family: 'Pixelify Sans', monospace;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.6;
+    }
 
-  /* STATS */
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #0d1525;
-    font-size: 0.72rem;
-  }
-  .stat-row .stat-label { color: var(--dim); }
-  .stat-row .stat-val { color: var(--accent3); font-weight: bold; }
-
-  /* UPGRADE / BUILDING cards */
-  .upgrade-card {
-    background: linear-gradient(135deg, #0d1525, #070d1a);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
-    position: relative;
-    overflow: hidden;
-  }
-  .upgrade-card:hover:not(.disabled) {
-    border-color: var(--accent2);
-    box-shadow: var(--glow2);
-    transform: translateX(3px);
-  }
-  .upgrade-card:active:not(.disabled) { transform: translateX(3px) scale(0.98); }
-  .upgrade-card.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  .upgrade-card.owned { border-color: #00f5ff44; }
-  .upgrade-card .uc-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 4px;
-  }
-  .upgrade-card .uc-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: #e8f0ff;
-  }
-  .upgrade-card .uc-count {
-    font-size: 0.8rem;
-    color: var(--accent3);
-    font-weight: bold;
-    min-width: 24px;
-    text-align: right;
-  }
-  .upgrade-card .uc-desc {
-    font-size: 0.62rem;
-    color: var(--dim);
-    margin-bottom: 6px;
-    line-height: 1.4;
-  }
-  .upgrade-card .uc-cost {
-    font-size: 0.68rem;
-    color: var(--accent2);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .upgrade-card .uc-cps {
-    font-size: 0.62rem;
-    color: var(--accent3);
-    margin-left: auto;
-  }
-  .upgrade-card .progress-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--accent2);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-
-  /* ACHIEVEMENTS */
-  .achievement {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    background: #0d1525;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    border: 1px solid var(--border);
-    transition: border-color 0.3s;
-  }
-  .achievement.unlocked { border-color: var(--accent3); }
-  .achievement .ach-icon { font-size: 1.4rem; filter: grayscale(1); }
-  .achievement.unlocked .ach-icon { filter: none; }
-  .achievement .ach-info .ach-name {
-    font-size: 0.65rem;
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: 0.05em;
-    color: var(--dim);
-  }
-  .achievement.unlocked .ach-info .ach-name { color: var(--accent3); }
-  .achievement .ach-info .ach-desc { font-size: 0.6rem; color: var(--dim); }
-
-  /* PRESTIGE BUTTON */
-  .prestige-btn {
-    display: none;
-    background: linear-gradient(135deg, #1a0030, #0d001a);
-    border: 2px solid var(--accent2);
-    border-radius: 8px;
-    padding: 14px 28px;
-    color: var(--accent2);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    cursor: pointer;
-    box-shadow: var(--glow2);
-    transition: all 0.2s;
-    text-transform: uppercase;
-    animation: prestigePulse 2s ease-in-out infinite;
-  }
-  .prestige-btn:hover {
-    background: linear-gradient(135deg, #2a0050, #1a0028);
-    box-shadow: 0 0 40px #ff00aaaa;
-  }
-  @keyframes prestigePulse {
-    0%, 100% { box-shadow: var(--glow2); }
-    50% { box-shadow: 0 0 30px #ff00aaaa; }
-  }
-
-  /* TOAST notifications */
-  .toast-container {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9998;
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 8px;
-    align-items: center;
-    pointer-events: none;
-  }
-  .toast {
-    background: #0a1830;
-    border: 1px solid var(--accent3);
-    color: var(--accent3);
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    font-family: 'Orbitron', sans-serif;
-    box-shadow: 0 0 20px #aaff0066;
-    animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
-  }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.9); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  @keyframes toastOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  /* MILESTONE bar */
-  .milestone-bar-wrap {
-    width: 100%;
-    max-width: 340px;
-    text-align: center;
-  }
-  .milestone-label {
-    font-size: 0.62rem;
-    color: var(--dim);
-    letter-spacing: 0.15em;
-    margin-bottom: 4px;
-  }
-  .milestone-bar {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .milestone-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width 0.3s ease;
-    border-radius: 3px;
-  }
-
-  /* Multiplier display */
-  .multiplier-badge {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.7rem;
-    background: #0d1525;
-    border: 1px solid var(--accent3);
-    color: var(--accent3);
-    padding: 4px 12px;
-    border-radius: 4px;
-    letter-spacing: 0.1em;
-  }
-
-  /* responsive */
-  @media (max-width: 900px) {
-    main { grid-template-columns: 1fr; }
-    .panel { max-height: 300px; border-right: none; border-bottom: 1px solid var(--border); }
-    .panel:last-child { border-left: none; border-top: 1px solid var(--border); }
-    header h1 { font-size: 1.5rem; }
-  }
-</style>
+    /* footer */
+    .footer {
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 2px;
+      text-align: center;
+      padding-bottom: 12px;
+    }
+    .footer span { color: var(--accent2); }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>CLICKOVERSE</h1>
-  <p>QUANTUM CLICK SIMULATION ENGINE v2.4.1</p>
-</header>
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
 
-<main>
-  <!-- LEFT: Buildings -->
-  <aside class="panel" id="buildings-panel">
-    <div class="panel-title">⚙ AUTO-GENERATORS</div>
-    <div id="buildings-list"></div>
-  </aside>
+  <!-- Moon -->
+  <div class="moon"></div>
 
-  <!-- CENTER: Main click area -->
-  <section class="center">
-    <div class="counter">
-      <div class="main-count" id="main-count">0</div>
-      <div class="label">QUANTUM UNITS</div>
-      <div class="cps" id="cps-display">+0 / sec</div>
+  <!-- Clouds -->
+  <div class="cloud" style="width:320px;height:70px;top:18vh;left:20vw;animation-duration:55s;opacity:0.6;"></div>
+  <div class="cloud" style="width:180px;height:45px;top:42vh;left:70vw;animation-duration:75s;animation-delay:-30s;opacity:0.4;"></div>
+  <div class="cloud" style="width:260px;height:55px;top:60vh;left:10vw;animation-duration:65s;animation-delay:-20s;opacity:0.35;"></div>
+  <div class="cloud" style="width:140px;height:35px;top:12vh;left:55vw;animation-duration:85s;animation-delay:-45s;opacity:0.3;"></div>
+
+  <!-- Flying Cat 🐱🪽 -->
+  <div class="cat-wrap" id="catWrap">
+    <div class="sparkle-trail">
+      <span class="sp" id="sp1">✨</span>
+      <span class="sp" id="sp2">⭐</span>
+      <span class="sp" id="sp3">✦</span>
+      <span class="sp" id="sp4">✨</span>
+    </div>
+    <span class="cat-emoji">🐱🪽</span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="hero">
+      <p class="hero-label">✦ welcome traveller ✦</p>
+      <h1 class="hero-title">my <span class="accent">github</span><br/>profile</h1>
+      <p class="hero-sub">// things i've built & experiments i've run</p>
     </div>
 
-    <div class="multiplier-badge" id="multiplier-badge">MULTIPLIER ×1</div>
-
-    <div class="click-zone" id="click-zone">
-      <div class="orbit-ring"></div>
-      <div class="orbit-ring"></div>
-      <div class="orbit-ring"></div>
-      <div class="click-btn" id="click-btn">
-        <span class="btn-icon">⚛</span>
-        <span class="btn-label">CLICK</span>
-      </div>
+    <div class="cards">
+      <a class="card" href="https://github.com?tab=repositories">
+        <span class="card-icon">📦</span>
+        <span class="card-title">repos</span>
+        <span class="card-desc">all my public projects and source code</span>
+      </a>
+      <a class="card" href="https://github.com?tab=stars">
+        <span class="card-icon">⭐</span>
+        <span class="card-title">stars</span>
+        <span class="card-desc">things i found cool and bookmarked</span>
+      </a>
+      <a class="card" href="https://github.com?tab=followers">
+        <span class="card-icon">🌐</span>
+        <span class="card-title">connect</span>
+        <span class="card-desc">follow along or drop me a message</span>
+      </a>
     </div>
 
-    <div class="milestone-bar-wrap">
-      <div class="milestone-label" id="milestone-label">NEXT MILESTONE: 100 QU</div>
-      <div class="milestone-bar">
-        <div class="milestone-fill" id="milestone-fill" style="width:0%"></div>
-      </div>
-    </div>
+    <p class="footer">made with <span>♥</span> &amp; a flying cat</p>
+  </div>
 
-    <button class="prestige-btn" id="prestige-btn">⚡ PRESTIGE RESET ⚡</button>
-  </section>
+  <script>
+    // Generate stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 160; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      const dur = (Math.random() * 4 + 2).toFixed(1);
+      const minOp = (Math.random() * 0.3 + 0.1).toFixed(2);
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}vh; left:${Math.random()*100}vw;
+        --dur:${dur}s; --min-op:${minOp};
+        animation-delay:${(Math.random()*5).toFixed(1)}s;
+      `;
+      starsEl.appendChild(s);
+    }
 
-  <!-- RIGHT: Upgrades & Achievements -->
-  <aside class="panel" id="upgrades-panel">
-    <div class="panel-title">🔬 UPGRADES</div>
-    <div id="upgrades-list"></div>
-    <br>
-    <div class="panel-title">🏆 ACHIEVEMENTS</div>
-    <div id="achievements-list"></div>
-
-    <br>
-    <div class="panel-title">📊 STATS</div>
-    <div id="stats-list">
-      <div class="stat-row"><span class="stat-label">TOTAL CLICKS</span><span class="stat-val" id="stat-clicks">0</span></div>
-      <div class="stat-row"><span class="stat-label">ALL-TIME QU</span><span class="stat-val" id="stat-alltime">0</span></div>
-      <div class="stat-row"><span class="stat-label">PRESTIGE RUNS</span><span class="stat-val" id="stat-prestige">0</span></div>
-      <div class="stat-row"><span class="stat-label">CLICK POWER</span><span class="stat-val" id="stat-cpc">1</span></div>
-      <div class="stat-row"><span class="stat-label">AUTO CPS</span><span class="stat-val" id="stat-cps">0</span></div>
-    </div>
-  </aside>
-</main>
-
-<div class="toast-container" id="toast-container"></div>
-
-<script>
-// ─── GAME STATE ────────────────────────────────────────────────────────────
-const state = {
-  units: 0,
-  totalUnits: 0,
-  totalClicks: 0,
-  prestigeRuns: 0,
-  multiplier: 1,
-  cpc: 1,  // click power
-};
-
-// ─── BUILDINGS ─────────────────────────────────────────────────────────────
-const buildings = [
-  { id:'cursor',   name:'NANO CURSOR',   icon:'🖱',  desc:'A tiny cursor that clicks for you.',  baseCost:15,    baseCps:0.1,  count:0 },
-  { id:'farm',     name:'QUBIT FARM',    icon:'🌾',  desc:'Harvests stray qubits from the void.',baseCost:100,   baseCps:0.5,  count:0 },
-  { id:'miner',    name:'DARK MINER',    icon:'⛏',  desc:'Mines dark matter for raw QU.',        baseCost:500,   baseCps:2,    count:0 },
-  { id:'reactor',  name:'FUSION CORE',   icon:'☢',  desc:'Sustains a micro fusion reaction.',    baseCost:2000,  baseCps:8,    count:0 },
-  { id:'lab',      name:'QUANTUM LAB',   icon:'🔬',  desc:'Experiments produce bonus clicks.',   baseCost:8000,  baseCps:25,   count:0 },
-  { id:'portal',   name:'VOID PORTAL',   icon:'🌀',  desc:'Pulls QU from alternate dimensions.',  baseCost:30000, baseCps:80,   count:0 },
-  { id:'dyson',    name:'DYSON SHELL',   icon:'🌟',  desc:'Wraps a star to harvest its energy.',  baseCost:150000,baseCps:250,  count:0 },
-];
-
-// ─── UPGRADES ──────────────────────────────────────────────────────────────
-const upgrades = [
-  { id:'dbl1',  name:'DOUBLE TAP',      icon:'👆', desc:'+1 per click.',          cost:100,    bought:false, effect:()=>{ state.cpc+=1; } },
-  { id:'dbl2',  name:'RAPID FIRE',      icon:'✌', desc:'+3 per click.',           cost:500,    bought:false, effect:()=>{ state.cpc+=3; } },
-  { id:'dbl3',  name:'QUANTUM BURST',   icon:'⚡', desc:'+10 per click.',          cost:3000,   bought:false, effect:()=>{ state.cpc+=10; } },
-  { id:'dbl4',  name:'SINGULARITY',     icon:'🕳', desc:'+50 per click.',          cost:20000,  bought:false, effect:()=>{ state.cpc+=50; } },
-  { id:'mul2',  name:'OVERCLOCK ×2',    icon:'⚙', desc:'Double all production.',  cost:1000,   bought:false, effect:()=>{ state.multiplier*=2; } },
-  { id:'mul3',  name:'HYPERDRIVE ×3',   icon:'🚀', desc:'Triple all production.',  cost:10000,  bought:false, effect:()=>{ state.multiplier*=3; } },
-  { id:'mul5',  name:'WARP FIELD ×5',   icon:'🌌', desc:'5× all production.',      cost:80000,  bought:false, effect:()=>{ state.multiplier*=5; } },
-  { id:'crit',  name:'CRIT MODULE',     icon:'💥', desc:'15% chance of ×10 click.',cost:5000,   bought:false, effect:()=>{ critEnabled=true; } },
-];
-
-let critEnabled = false;
-
-// ─── ACHIEVEMENTS ──────────────────────────────────────────────────────────
-const achievements = [
-  { id:'a1', name:'FIRST CLICK',     icon:'🖱', desc:'Click for the first time.',      condition:()=>state.totalClicks>=1,    unlocked:false },
-  { id:'a2', name:'CENTURION',       icon:'💯', desc:'Reach 100 total clicks.',         condition:()=>state.totalClicks>=100,  unlocked:false },
-  { id:'a3', name:'CLICKER ADDICT',  icon:'🔥', desc:'Click 1000 times.',              condition:()=>state.totalClicks>=1000, unlocked:false },
-  { id:'a4', name:'FIRST THOUSAND',  icon:'🌱', desc:'Earn 1,000 QU.',                  condition:()=>state.totalUnits>=1000,  unlocked:false },
-  { id:'a5', name:'MILLIONAIRE',     icon:'💰', desc:'Earn 1,000,000 QU.',             condition:()=>state.totalUnits>=1000000,unlocked:false },
-  { id:'a6', name:'AUTOMATOR',       icon:'🤖', desc:'Own 10 auto-generators.',        condition:()=>buildings.reduce((s,b)=>s+b.count,0)>=10, unlocked:false },
-  { id:'a7', name:'PRESTIGE MASTER', icon:'♾', desc:'Prestige for the first time.',    condition:()=>state.prestigeRuns>=1,   unlocked:false },
-  { id:'a8', name:'BILLIONAIRE',     icon:'🏦', desc:'Earn 1,000,000,000 QU.',         condition:()=>state.totalUnits>=1e9,   unlocked:false },
-];
-
-// ─── MILESTONES ────────────────────────────────────────────────────────────
-const milestones = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 1e8, 1e9, 1e10];
-
-function getCurrentMilestone() {
-  for (let m of milestones) if (state.units < m) return m;
-  return milestones[milestones.length - 1] * 10;
-}
-function getPrevMilestone() {
-  let prev = 0;
-  for (let m of milestones) {
-    if (state.units < m) return prev;
-    prev = m;
-  }
-  return milestones[milestones.length - 1];
-}
-
-// ─── COST FORMULA ─────────────────────────────────────────────────────────
-function buildingCost(b) {
-  return Math.floor(b.baseCost * Math.pow(1.15, b.count));
-}
-function totalCps() {
-  return buildings.reduce((s, b) => s + b.baseCps * b.count, 0) * state.multiplier;
-}
-
-// ─── FORMAT NUMBERS ────────────────────────────────────────────────────────
-function fmt(n) {
-  if (n < 1e3) return Math.floor(n).toLocaleString();
-  if (n < 1e6) return (n/1e3).toFixed(2) + 'K';
-  if (n < 1e9) return (n/1e6).toFixed(2) + 'M';
-  if (n < 1e12) return (n/1e9).toFixed(2) + 'B';
-  if (n < 1e15) return (n/1e12).toFixed(2) + 'T';
-  return n.toExponential(2);
-}
-
-// ─── RENDER BUILDINGS ──────────────────────────────────────────────────────
-function renderBuildings() {
-  const list = document.getElementById('buildings-list');
-  list.inn
+    // Re-trigger sparkle trail on each loop
+    const sparkles = document.querySelectorAll('.sp');
+    function resetSparkles() {
+      sparkles.forEach(sp => {
+        sp.style.animation = 'none';
+        void sp.offsetWidth;
+        sp.style.animation = '';
+      });
+    }
+    setInterval(resetSparkles, 700);
+  </script>
+</body>
+    </html>
