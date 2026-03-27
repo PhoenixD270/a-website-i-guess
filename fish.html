@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐟</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0077b6 0%, #023e8a 50%, #03045e 100%);
+    }
+
+    /* water shimmer overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 2px,
+        transparent 2px,
+        transparent 40px
+      );
+      pointer-events: none;
+      animation: shimmer 4s ease-in-out infinite alternate;
+    }
+    @keyframes shimmer {
+      from { opacity: 0.6; transform: scaleX(1); }
+      to   { opacity: 1;   transform: scaleX(1.01); }
+    }
+
+    /* bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.07);
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      from { transform: translateY(0); opacity: 0.6; }
+      to   { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    /* background small fishes */
+    .bg-fish {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.4;
+      animation: swim linear infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+    .bg-fish.left  { animation-name: swim; }
+    .bg-fish.right { animation-name: swim-r; transform: scaleX(-1); }
+
+    @keyframes swim {
+      from { left: -80px; }
+      to   { left: 110vw; }
+    }
+    @keyframes swim-r {
+      from { left: 110vw; }
+      to   { left: -80px; }
+    }
+
+    /* main fish */
+    .fish {
+      position: absolute;
+      font-size: 72px;
+      cursor: pointer;
+      user-select: none;
+      animation: swim-main 14s linear infinite, bob-main 2.5s ease-in-out infinite;
+      transition: filter 0.1s;
+    }
+    @keyframes swim-main {
+      from { left: -100px; }
+      to   { left: 110vw; }
+    }
+    @keyframes bob-main {
+      0%, 100% { margin-top: 0; }
+      50%       { margin-top: -25px; }
+    }
+
+    .fish.bounce {
+      animation: swim-main 14s linear infinite, pop-bounce 0.5s ease;
+    }
+    @keyframes pop-bounce {
+      0%   { transform: scale(1); }
+      25%  { transform: scale(1.4) translateY(-20px); }
+      55%  { transform: scale(0.9) translateY(10px); }
+      80%  { transform: scale(1.1) translateY(-5px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Bubbles -->
+  <div class="bubble" style="width:8px;height:8px;left:10%;bottom:20%;animation-duration:6s;animation-delay:0s;"></div>
+  <div class="bubble" style="width:5px;height:5px;left:25%;bottom:10%;animation-duration:8s;animation-delay:-2s;"></div>
+  <div class="bubble" style="width:10px;height:10px;left:50%;bottom:30%;animation-duration:7s;animation-delay:-4s;"></div>
+  <div class="bubble" style="width:6px;height:6px;left:70%;bottom:15%;animation-duration:9s;animation-delay:-1s;"></div>
+  <div class="bubble" style="width:4px;height:4px;left:85%;bottom:25%;animation-duration:5s;animation-delay:-3s;"></div>
+  <div class="bubble" style="width:7px;height:7px;left:40%;bottom:5%;animation-duration:6.5s;animation-delay:-5s;"></div>
+
+  <!-- Background fishes -->
+  <div class="bg-fish left"  style="top:18%;animation-duration:22s;animation-delay:-5s;">🐠</div>
+  <div class="bg-fish left"  style="top:60%;animation-duration:30s;animation-delay:-12s;">🐡</div>
+  <div class="bg-fish right" style="top:35%;animation-duration:26s;animation-delay:-8s;">🐟</div>
+  <div class="bg-fish right" style="top:70%;animation-duration:20s;animation-delay:-18s;">🐠</div>
+  <div class="bg-fish left"  style="top:80%;animation-duration:35s;animation-delay:-22s;">🐟</div>
+
+  <!-- Main fish -->
+  <div class="fish" id="fish" style="top:42%;">🐟</div>
+
+
+  <script>
+    const fish = document.getElementById('fish');
+
+    function playPop() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.15);
+    }
+
+    fish.addEventListener('click', () => {
+      playPop();
+      fish.classList.remove('bounce');
+      void fish.offsetWidth; // reflow to restart animation
+      fish.classList.add('bounce');
+    });
+
+    fish.addEventListener('animationend', (e) => {
+      if (e.animationName === 'pop-bounce') {
+        fish.classList.remove('bounce');
+      }
+    });
+  </script>
+
+</body>
+</html>
